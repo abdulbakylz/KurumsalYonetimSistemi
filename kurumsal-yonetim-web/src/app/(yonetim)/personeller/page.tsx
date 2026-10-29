@@ -1,6 +1,7 @@
 
-import PersonelEkleButonu from "../../components/PersonelEkleButonu";
-import PersonelTablosu from "../../components/PersonelTablosu";
+import PersonelEkleButonu from "../../../components/PersonelEkleButonu";
+import { cookies } from "next/headers";
+import PersonelTablosu from "../../../components/PersonelTablosu";
 
 type Personel = {
   personelId: number;
@@ -12,14 +13,27 @@ type Personel = {
 
 export const dynamic = "force-dynamic";
 
+
 export default async function PersonellerPage() {
   let personeller: Personel[] = [];
   let hata = "";
 
   try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("kurumsal360_token")?.value;
+
+    if (!token) {
+      throw new Error("Oturum bulunamadı.");
+    }
+
     const response = await fetch(
       "http://localhost:5037/api/personeller",
-      { cache: "no-store" }
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        cache: "no-store",
+      }
     );
 
     if (!response.ok) {
@@ -29,8 +43,12 @@ export default async function PersonellerPage() {
     personeller = await response.json();
   } catch {
     hata =
-      "Personel bilgileri alınamadı. API bağlantısını kontrol edin.";
+      "Personel bilgileri alınamadı. Oturumunuzu ve API bağlantısını kontrol edin.";
   }
+
+  // Buradan sonrası mevcut sayfa kodunla aynı kalacak.
+
+
 
   return (
     <main className="min-h-screen bg-slate-50 p-6 pt-20 text-slate-900 md:p-10">

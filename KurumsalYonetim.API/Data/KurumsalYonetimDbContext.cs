@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using KurumsalYonetim.API.Models;
 using Microsoft.EntityFrameworkCore;
@@ -18,12 +18,46 @@ public partial class KurumsalYonetimDbContext : DbContext
 
     public virtual DbSet<Personeller> Personellers { get; set; }
 
+    public virtual DbSet<Kullanicilar> Kullanicilars { get; set; }
+
     public virtual DbSet<Urunler> Urunlers { get; set; }
 
     public virtual DbSet<VwMalzemeTeslimRaporu> VwMalzemeTeslimRaporus { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+
+modelBuilder.Entity<Kullanicilar>(entity =>
+{
+    entity.HasKey(e => e.KullaniciId);
+
+    entity.ToTable("Kullanicilar");
+
+    entity.HasIndex(e => e.Email).IsUnique();
+
+    entity.Property(e => e.KullaniciId)
+        .HasColumnName("KullaniciID");
+
+    entity.Property(e => e.AdSoyad)
+        .HasMaxLength(100);
+
+    entity.Property(e => e.Email)
+        .HasMaxLength(150);
+
+    entity.Property(e => e.SifreHash)
+        .HasMaxLength(255);
+
+    entity.Property(e => e.Rol)
+        .HasMaxLength(20)
+        .HasDefaultValue("Personel");
+
+    entity.Property(e => e.Aktif)
+        .HasDefaultValue(true);
+
+    entity.Property(e => e.OlusturmaTarihi)
+        .HasDefaultValueSql("(sysdatetime())");
+});
+
         modelBuilder.Entity<Departmanlar>(entity =>
         {
             entity.HasKey(e => e.DepartmanId).HasName("PK__Departma__3A231236FA89659D");

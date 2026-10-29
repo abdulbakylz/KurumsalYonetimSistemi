@@ -1,5 +1,6 @@
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using KurumsalYonetim.API.Data;
 using KurumsalYonetim.API.Models;
@@ -8,6 +9,7 @@ namespace KurumsalYonetim.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize(Roles = "Admin")]
 public class DepartmanlarController : ControllerBase
 {
     private readonly KurumsalYonetimDbContext _context;

@@ -1,5 +1,6 @@
 
-import DepartmanYonetimi from "../../components/DepartmanYonetimi";
+import { cookies } from "next/headers";
+import DepartmanYonetimi from "../../../components/DepartmanYonetimi";
 
 type Departman = {
   departmanId: number;
@@ -14,9 +15,21 @@ export default async function DepartmanlarPage() {
   let hata = "";
 
   try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("kurumsal360_token")?.value;
+
+    if (!token) {
+      throw new Error("Oturum bulunamadı.");
+    }
+
     const response = await fetch(
       "http://localhost:5037/api/departmanlar",
-      { cache: "no-store" }
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        cache: "no-store",
+      }
     );
 
     if (!response.ok) {
@@ -25,7 +38,8 @@ export default async function DepartmanlarPage() {
 
     departmanlar = await response.json();
   } catch {
-    hata = "Departman bilgileri alınamadı. Backend bağlantısını kontrol edin.";
+    hata =
+      "Departman bilgileri alınamadı. Oturumunuzu ve API bağlantısını kontrol edin.";
   }
 
   return (

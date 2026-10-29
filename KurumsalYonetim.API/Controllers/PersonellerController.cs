@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using KurumsalYonetim.API.Data;
 using KurumsalYonetim.API.Dtos;
@@ -8,6 +9,8 @@ namespace KurumsalYonetim.API.Controllers;
 
 [ApiController]
 [Route("api/personeller")]
+[Authorize(Roles = "Admin")]
+
 public class PersonellerController : ControllerBase
 {
     private readonly KurumsalYonetimDbContext _context;

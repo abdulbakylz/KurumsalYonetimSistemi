@@ -1,5 +1,6 @@
 
-import UrunYonetimi from "../../components/UrunYonetimi";
+import { cookies } from "next/headers";
+import UrunYonetimi from "../../../components/UrunYonetimi";
 
 type Urun = {
   urunId: number;
@@ -18,9 +19,21 @@ export default async function UrunlerPage() {
   let hata = "";
 
   try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("kurumsal360_token")?.value;
+
+    if (!token) {
+      throw new Error("Oturum bulunamadı.");
+    }
+
     const response = await fetch(
       "http://localhost:5037/api/urunler",
-      { cache: "no-store" }
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        cache: "no-store",
+      }
     );
 
     if (!response.ok) {
@@ -29,7 +42,8 @@ export default async function UrunlerPage() {
 
     urunler = await response.json();
   } catch {
-    hata = "Ürün bilgileri alınamadı. Backend bağlantısını kontrol edin.";
+    hata =
+      "Ürün bilgileri alınamadı. Oturumunuzu ve API bağlantısını kontrol edin.";
   }
 
   return (

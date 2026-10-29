@@ -1,5 +1,8 @@
 
 import Link from "next/link";
+import CikisButonu from "../components/CikisButonu";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -37,8 +40,15 @@ const quickLinks = [
   { href: "/teslimler", label: "Malzeme Teslimleri", icon: "⇄" },
 ];
 
-async function veriGetir<T>(adres: string): Promise<T> {
+
+async function veriGetir<T>(
+  adres: string,
+  token: string
+): Promise<T> {
   const response = await fetch(`${API}/${adres}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
     cache: "no-store",
   });
 
@@ -73,6 +83,43 @@ function tarihFormatla(tarih: string | null) {
 }
 
 export default async function Home() {
+
+  const cookieStore = await cookies();
+  const token = cookieStore.get("kurumsal360_token")?.value;
+
+  if (!token) {
+    redirect("/login");
+  }
+
+  let oturumResponse: Response;
+
+  try {
+    oturumResponse = await fetch(
+      "http://localhost:5037/api/auth/me",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        cache: "no-store",
+      }
+    );
+  } catch {
+    throw new Error(
+      "Kimlik doğrulama servisine ulaşılamadı."
+    );
+  }
+
+  if (
+    oturumResponse.status === 401 ||
+    oturumResponse.status === 403
+  ) {
+    redirect("/login");
+  }
+
+  if (!oturumResponse.ok) {
+    throw new Error("Oturum doğrulanamadı.");
+  }
+
   let personeller: Personel[] = [];
   let departmanlar: Departman[] = [];
   let urunler: Urun[] = [];
@@ -82,14 +129,18 @@ export default async function Home() {
   try {
     [personeller, departmanlar, urunler, teslimler] =
       await Promise.all([
-        veriGetir<Personel[]>("personeller"),
-        veriGetir<Departman[]>("departmanlar"),
-        veriGetir<Urun[]>("urunler"),
-        veriGetir<Teslim[]>("malzemeTeslimleri"),
+        veriGetir<Personel[]>("personeller", token),
+        veriGetir<Departman[]>("departmanlar", token),
+        veriGetir<Urun[]>("urunler", token),
+        veriGetir<Teslim[]>("malzemeTeslimleri", token),
       ]);
-  } catch {
+  } catch (error) {
+    console.error("Dashboard API hatası:", error);
+
     hata =
-      "Veriler alınamadı. Backend servisinin çalıştığından emin olun.";
+      error instanceof Error
+        ? error.message
+        : "Veriler alınamadı.";
   }
 
   const kritikUrunler = urunler.filter(
@@ -145,15 +196,21 @@ export default async function Home() {
   return (
     <main className="min-h-screen bg-slate-50 px-5 pb-10 pt-20 text-slate-900 md:px-9">
   <div className="mx-auto max-w-7xl"></div>
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900">
-          Genel Bakış
-        </h1>
-        <p className="mt-2 text-sm text-slate-500">
-          Kurumsal yönetim paneline hoş geldiniz.
-          İşletmenizin güncel durumunu buradan takip edin.
-        </p>
-      </header>
+
+<header className="mb-8 flex flex-wrap items-start justify-between gap-4">
+  <div>
+    <h1 className="text-3xl font-bold text-slate-900">
+      Genel Bakış
+    </h1>
+    <p className="mt-2 text-sm text-slate-500">
+      Kurumsal yönetim paneline hoş geldiniz.
+      İşletmenizin güncel durumunu buradan takip edin.
+    </p>
+  </div>
+
+  <CikisButonu />
+</header>
+
 
       {hata && (
         <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
@@ -346,7 +403,7 @@ export default async function Home() {
           ))}
         </div>
       </section>
-      
+
     </main>
   );
 }

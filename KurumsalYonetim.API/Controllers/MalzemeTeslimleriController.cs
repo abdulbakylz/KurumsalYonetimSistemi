@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using KurumsalYonetim.API.Data;
+using Microsoft.AspNetCore.Authorization;
 using KurumsalYonetim.API.Models;
 using System.ComponentModel.DataAnnotations;
 
@@ -9,6 +10,7 @@ namespace KurumsalYonetim.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize(Roles = "Admin")]
 public class MalzemeTeslimleriController : ControllerBase
 {
     private readonly KurumsalYonetimDbContext _context;

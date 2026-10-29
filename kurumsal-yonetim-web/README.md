@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Kurumsal360 — Web Arayüzü
 
-## Getting Started
+Kurumsal360 Kurumsal Yönetim Sistemi'nin Next.js ve TypeScript ile geliştirilmiş web arayüzüdür.
 
-First, run the development server:
+Bu uygulama, ASP.NET Core Web API ile haberleşerek kurumsal yönetim işlemlerini kullanıcı dostu bir panel üzerinden gerçekleştirmeyi sağlar.
+
+## Özellikler
+
+- Yönetim paneli ve temel işletme istatistikleri
+- Personel yönetimi
+- Departman yönetimi
+- Ürün ve stok takibi
+- Malzeme teslim kayıtları
+- Kullanıcı giriş ve çıkış işlemleri
+- JWT tabanlı oturum doğrulama
+- Admin yetkisi gerektiren korumalı yönetim sayfaları
+- Responsive arayüz
+
+## Teknolojiler
+
+- Next.js 16
+- React
+- TypeScript
+- Tailwind CSS
+- Next.js App Router
+
+## Kurulum
+
+Gereksinimler: Node.js ve npm.
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Uygulama varsayılan olarak `http://localhost:3000` adresinde çalışır.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Frontend'in yönetim verilerini gösterebilmesi için Kurumsal360 backend API'sinin ve SQL Server veritabanının da yapılandırılmış ve çalışır durumda olması gerekir.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Proje Yapısı
 
-## Learn More
+```text
+src/
+├── app/
+│   ├── (yonetim)/
+│   │   ├── personeller/
+│   │   ├── departmanlar/
+│   │   ├── urunler/
+│   │   └── teslimler/
+│   ├── api/
+│   │   └── auth/
+│   ├── login/
+│   └── page.tsx
+└── components/
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Güvenlik
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Oturum bilgileri HttpOnly cookie üzerinden yönetilir. Yönetim sayfaları ve ilgili backend API uçları yetkilendirme kontrolleriyle korunur.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Bu proje geliştirme ve portföy amaçlıdır; üretim ortamına alınmadan önce ek güvenlik kontrolleri gereklidir.
 
-## Deploy on Vercel
+## Ana Proje
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Backend, veritabanı ve tüm sistemin açıklaması için:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+https://github.com/abdulbakylz/KurumsalYonetimSistemi
+
+## Geliştirici
+
+**Abdül Baki Yıldız**
+
+GitHub: https://github.com/abdulbakylz

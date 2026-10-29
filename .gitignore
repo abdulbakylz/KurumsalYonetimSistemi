@@ -1,0 +1,25 @@
+# Next.js
+**/node_modules/
+**/.next/
+**/out/
+**/.env
+**/.env.*
+
+# ASP.NET Core
+**/bin/
+**/obj/
+**/.vs/
+**/appsettings.json
+**/appsettings.Development.json
+**/appsettings.Production.json
+
+# IDE
+.vscode/
+.idea/
+
+# Log ve veritabani
+*.log
+*.bak
+*.mdf
+*.ldf
+**/Properties/launchSettings.json

@@ -15,7 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="tr">
-      <body className="bg-slate-50 text-slate-900">
+      <body className="bg-slate-50 text-slate-900">  
         <Sidebar />
         <div className="min-h-screen md:ml-64">
           {children}

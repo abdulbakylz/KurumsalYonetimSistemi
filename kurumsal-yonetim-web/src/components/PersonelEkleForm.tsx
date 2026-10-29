@@ -136,7 +136,7 @@ export default function PersonelEkleForm({ onClose }: Props) {
           ))}
 
           <label className="block text-sm font-medium">
-            
+            Departman
             <select
               required
               value={form.departmanId}
